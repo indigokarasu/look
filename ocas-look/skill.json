@@ -1,0 +1,8 @@
+{
+  "name": "ocas-look",
+  "version": "1.0.3",
+  "description": "Image-to-action skill. Use when the user provides an image and wants it turned into a validated, decision-ready draft: events from flyers, macros from meal photos, places to save, products to price, receipts to log, documents to file, or civic issues to report. Trigger phrases: 'turn this flyer into a calendar event', 'estimate macros from this photo', 'find the best price for this product', 'make this document searchable'. Do not use for generic OCR, computer vision research, or surveillance.",
+  "author": "Indigo Karasu",
+  "email": "mx.indigo.karasu@gmail.com",
+  "skill_type": "workflow"
+}
