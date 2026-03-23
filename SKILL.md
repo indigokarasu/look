@@ -31,6 +31,53 @@ Look owns image-to-action conversion: ingest, context inference, domain routing,
 
 Look does not own: web research (Sift), knowledge graph writes (Elephas), preference persistence (Taste), communications (Dispatch).
 
+
+## Functions
+
+### look_ingest_image()
+
+**Purpose:** ingest image(s) with optional EXIF and device pre-parse
+
+**Returns:** Operation result
+
+### look_propose_actions()
+
+**Purpose:** generate ActionDrafts with DecisionRecords
+
+**Returns:** Operation result
+
+### look_execute_action()
+
+**Purpose:** execute a confirmed draft (requires explicit approval)
+
+**Returns:** Operation result
+
+### look_rollback_action()
+
+**Purpose:** attempt rollback for reversible actions
+
+**Returns:** Operation result
+
+### look_status()
+
+**Purpose:** last ingest, pending drafts, items awaiting confirmation
+
+**Returns:** Operation result
+
+### look_config_set()
+
+**Purpose:** update configuration
+
+**Returns:** Operation result
+
+### look_journal()
+
+**Purpose:** write journal for the current run; called at end of every run
+
+**Returns:** Operation result
+
+
+
 ## Supported domains
 
 Events, food macros, places, products, civic issues, receipts, documents.
