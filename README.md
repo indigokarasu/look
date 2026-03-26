@@ -1,41 +1,53 @@
 # 👁️ Look
 
-Image-to-action processing with validated, decision-ready drafts.
-
-**Skill name:** `ocas-look`
-**Version:** 2.2.0
-**Type:** system
-**Layer:** Signal
-**Author:** Indigo Karasu
+Look bridges the physical world and the digital agent -- it takes a user-provided image, infers what the user probably wants done with it, and produces a validated, decision-ready action draft across domains including calendar events, meal macros, places, product comparisons, receipts, documents, and civic reports. It resolves ambiguity through research and option reduction before asking any clarifying questions, and nothing executes without explicit per-draft confirmation.
 
 ---
 
-## Files
+## Overview
 
-| File | Purpose |
+Look closes the gap between the physical world and the digital agent stack. A photo of a restaurant flyer becomes a calendar event draft. A meal photo becomes a macro estimate. A storefront becomes a saved place. A receipt becomes an expense entry. Look infers intent from visual evidence, reduces ambiguity through research and option reduction before asking any clarifying questions, and produces one to three decision-ready drafts -- none of which execute without explicit per-draft confirmation. Extracted entities (places, events, products) are emitted as enrichment candidates to Chronicle so discovered knowledge accumulates.
+
+## Commands
+
+| Command | Description |
 |---|---|
-| `skill.json` | Package metadata and routing description |
-| `SKILL.md` | Operational instructions for the agent |
-| `references/` | Support files referenced by SKILL.md |
+| `look.ingest.image` | Ingest image(s) with optional EXIF and device pre-parse |
+| `look.propose.actions` | Generate ActionDrafts with DecisionRecords |
+| `look.execute.action` | Execute a confirmed draft (requires explicit approval) |
+| `look.rollback.action` | Attempt rollback for reversible actions |
+| `look.status` | Last ingest, pending drafts, items awaiting confirmation |
+| `look.config.set` | Update configuration |
+| `look.journal` | Write journal for the current run |
 
----
+## Setup
+
+`look.init` runs automatically on first invocation and creates all required directories, config.json, state.json, and JSONL files. No manual setup is required. Look is purely reactive -- no scheduled tasks.
+
+## Dependencies
+
+**OCAS Skills**
+- [Sift](https://github.com/indigokarasu/sift) -- web research for validation during draft generation
+- [Elephas](https://github.com/indigokarasu/elephas) -- receives Signal files for extracted entities after draft generation
+
+**External**
+- None
+
+## Scheduled Tasks
+
+This skill is purely reactive. No scheduled tasks.
 
 ## Changelog
 
-### 2.2.0 (2026-03-22)
+### v2.2.0 -- March 22, 2026
+- Routing improvements
 
-- Added short-name routing aliases to skill.json description and SKILL.md frontmatter for natural invocation ('Scout', 'Sift', etc.)
-- Added trigger phrases to descriptions for improved routing accuracy
-- Cross-skill references in descriptions now use 'use X' format for routing clarity
+### v2.1.0 -- March 22, 2026
+- Signal emission to Elephas for extracted entities
+- Journal documentation and mandatory confirmation enforcement
 
-### 2.1.0 (2026-03-22)
+### v2.0.0 -- March 18, 2026
+- Initial release as part of the unified OCAS skill suite
+---
 
-- Added explicit signal emission step to core workflow (step 9) -- emits Signal files to Elephas intake for extracted entities
-- Added explicit journal write as final workflow step (step 10)
-- Added Initialization section with storage bootstrap and Elephas intake directory creation
-- Removed non-conformant OCAS_ROOT environment variable reference
-- Changed Elephas cooperation from 'optionally emit' to 'emit Signal files after draft generation'
-
-### 2.0.0 (2026-03-18)
-
-- Initial build of all OCAS skills as a unified suite
+*Look is part of the [OpenClaw Agent Suite](https://github.com/indigokarasu) -- a collection of interconnected skills for personal intelligence, autonomous research, and continuous self-improvement. Each skill owns a narrow responsibility and communicates with others through structured signal files, shared journals, and Chronicle, a long-term knowledge graph that accumulates verified facts over time.*
