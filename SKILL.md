@@ -1,12 +1,14 @@
 ---
 name: ocas-look
-description: Look: image-to-action skill. Converts user-provided images into validated, decision-ready drafts across real-world action domains: events from flyers, macros from meal photos, places to save, products to price, receipts to log, documents to file, civic issues to report. Trigger phrases: 'look at this image', 'what is this', 'scan this receipt', 'what event is this', 'how many calories', 'save this place'. Do not use for generic OCR, computer vision research, or surveillance.
+source: https://github.com/indigokarasu/look
+install: openclaw skill install https://github.com/indigokarasu/look
+description: Use when converting a user-provided image into a validated, decision-ready action draft: events from flyers, macros from meal photos, places to save, products to price, receipts to log, documents to file, or civic issues to report. Trigger phrases: 'look at this image', 'what is this', 'scan this receipt', 'what event is this', 'how many calories', 'save this place'. Do not use for generic OCR, computer vision research, or surveillance.
 metadata: {"openclaw":{"emoji":"👁️"}}
 ---
 
 # Look
 
-Look converts images into validated, decision-ready action drafts. It infers intent, extracts evidence, researches and validates, reduces ambiguity before asking questions, and produces drafts requiring explicit confirmation for execution.
+Look bridges the physical world and the digital agent — it takes a user-provided image, infers what the user probably wants done with it, and produces a validated, decision-ready action draft across domains including calendar events, meal macros, places, product comparisons, receipts, documents, and civic reports. It resolves ambiguity through research and option reduction before asking any clarifying questions, and nothing executes without explicit per-draft confirmation.
 
 ## When to use
 
@@ -30,53 +32,6 @@ Look converts images into validated, decision-ready action drafts. It infers int
 Look owns image-to-action conversion: ingest, context inference, domain routing, draft generation, and execution with confirmation.
 
 Look does not own: web research (Sift), knowledge graph writes (Elephas), preference persistence (Taste), communications (Dispatch).
-
-
-## Functions
-
-### look_ingest_image()
-
-**Purpose:** ingest image(s) with optional EXIF and device pre-parse
-
-**Returns:** Operation result
-
-### look_propose_actions()
-
-**Purpose:** generate ActionDrafts with DecisionRecords
-
-**Returns:** Operation result
-
-### look_execute_action()
-
-**Purpose:** execute a confirmed draft (requires explicit approval)
-
-**Returns:** Operation result
-
-### look_rollback_action()
-
-**Purpose:** attempt rollback for reversible actions
-
-**Returns:** Operation result
-
-### look_status()
-
-**Purpose:** last ingest, pending drafts, items awaiting confirmation
-
-**Returns:** Operation result
-
-### look_config_set()
-
-**Purpose:** update configuration
-
-**Returns:** Operation result
-
-### look_journal()
-
-**Purpose:** write journal for the current run; called at end of every run
-
-**Returns:** Operation result
-
-
 
 ## Supported domains
 
@@ -224,10 +179,11 @@ public
 
 ## Support file map
 
-File | When to read
-`references/schemas.md` | Before creating evidence, drafts, or receipts
-`references/domain_playbooks.md` | Before domain routing or draft generation
-`references/decision_policy.md` | Before risk assessment or confirmation decisions
-`references/command_reference.md` | Before any command execution
-`references/storage_and_config.md` | Before config changes or storage operations
-`references/journal.md` | Before look.journal; at end of every run
+| File | When to read |
+|---|---|
+| `references/schemas.md` | Before creating evidence, drafts, or receipts |
+| `references/domain_playbooks.md` | Before domain routing or draft generation |
+| `references/decision_policy.md` | Before risk assessment or confirmation decisions |
+| `references/command_reference.md` | Before any command execution |
+| `references/storage_and_config.md` | Before config changes or storage operations |
+| `references/journal.md` | Before look.journal; at end of every run |
