@@ -63,6 +63,7 @@ Clarification happens only after option reduction, not before.
 - `look.status` — last ingest, pending drafts, items awaiting confirmation
 - `look.config.set` — update configuration
 - `look.journal` — write journal for the current run; called at end of every run
+- `look.update` — pull latest from GitHub source; preserves journals and data
 
 ## Confirmation and rollback rules
 
@@ -169,9 +170,39 @@ On first invocation of any Look command, run `look.init`:
 3. Create empty JSONL files: `events.jsonl`, `decisions.jsonl`
 4. Create `~/openclaw/journals/ocas-look/`
 5. Ensure `~/openclaw/db/ocas-elephas/intake/` exists (create if missing)
-6. Log initialization as a DecisionRecord in `decisions.jsonl`
+6. Register cron job `look:update` if not already present (check `openclaw cron list` first)
+7. Log initialization as a DecisionRecord in `decisions.jsonl`
 
-Look is purely reactive. No cron jobs or heartbeat entries.
+## Background tasks
+
+| Job name | Mechanism | Schedule | Command |
+|---|---|---|---|
+| `look:update` | cron | `0 0 * * *` (midnight daily) | `look.update` |
+
+```
+openclaw cron add --name look:update --schedule "0 0 * * *" --command "look.update" --sessionTarget isolated --lightContext true --timezone America/Los_Angeles
+```
+
+
+## Self-update
+
+`look.update` pulls the latest package from the `source:` URL in this file's frontmatter. Runs silently — no output unless the version changed or an error occurred.
+
+1. Read `source:` from frontmatter → extract `{owner}/{repo}` from URL
+2. Read local version from `skill.json`
+3. Fetch remote version: `gh api "repos/{owner}/{repo}/contents/skill.json" --jq '.content' | base64 -d | python3 -c "import sys,json;print(json.load(sys.stdin)['version'])"`
+4. If remote version equals local version → stop silently
+5. Download and install:
+   ```bash
+   TMPDIR=$(mktemp -d)
+   gh api "repos/{owner}/{repo}/tarball/main" > "$TMPDIR/archive.tar.gz"
+   mkdir "$TMPDIR/extracted"
+   tar xzf "$TMPDIR/archive.tar.gz" -C "$TMPDIR/extracted" --strip-components=1
+   cp -R "$TMPDIR/extracted/"* ./
+   rm -rf "$TMPDIR"
+   ```
+6. On failure → retry once. If second attempt fails, report the error and stop.
+7. Output exactly: `I updated Look from version {old} to {new}`
 
 ## Visibility
 

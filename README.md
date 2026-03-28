@@ -19,10 +19,11 @@ Look closes the gap between the physical world and the digital agent stack. A ph
 | `look.status` | Last ingest, pending drafts, items awaiting confirmation |
 | `look.config.set` | Update configuration |
 | `look.journal` | Write journal for the current run |
+| `look.update` | Pull latest from GitHub source (preserves journals and data) |
 
 ## Setup
 
-`look.init` runs automatically on first invocation and creates all required directories, config.json, state.json, and JSONL files. No manual setup is required. Look is purely reactive -- no scheduled tasks.
+`look.init` runs automatically on first invocation and creates all required directories, config.json, state.json, and JSONL files. No manual setup is required. It also registers the `look:update` cron job (midnight daily) for automatic self-updates.
 
 ## Dependencies
 
@@ -35,9 +36,14 @@ Look closes the gap between the physical world and the digital agent stack. A ph
 
 ## Scheduled Tasks
 
-This skill is purely reactive. No scheduled tasks.
+| Job | Mechanism | Schedule | Command |
+|---|---|---|---|
+| `look:update` | cron | `0 0 * * *` (midnight daily) | Self-update from GitHub source |
 
 ## Changelog
+
+### v2.2.1 -- March 27, 2026
+- Added `look.update` command and midnight cron for automatic version-checked self-updates
 
 ### v2.2.0 -- March 22, 2026
 - Routing improvements
