@@ -17,8 +17,6 @@
     {run_id}.json
 ```
 
-The OCAS_ROOT environment variable overrides `~/openclaw` if set.
-
 ## Config Fields
 - Capability toggles by domain
 - Confidence thresholds
