@@ -2,7 +2,7 @@
 name: ocas-look
 source: https://github.com/indigokarasu/look
 install: openclaw skill install https://github.com/indigokarasu/look
-description: Use when converting a user-provided image into a validated, decision-ready action draft: events from flyers, macros from meal photos, places to save, products to price, receipts to log, documents to file, or civic issues to report. Trigger phrases: 'look at this image', 'what is this', 'scan this receipt', 'what event is this', 'how many calories', 'save this place'. Do not use for generic OCR, computer vision research, or surveillance.
+description: Use when converting a user-provided image into a validated, decision-ready action draft: events from flyers, macros from meal photos, places to save, products to price, receipts to log, documents to file, or civic issues to report. Trigger phrases: 'look at this image', 'what is this', 'scan this receipt', 'what event is this', 'how many calories', 'save this place', 'update look'. Do not use for generic OCR, computer vision research, or surveillance.
 metadata: {"openclaw":{"emoji":"👁️"}}
 ---
 
