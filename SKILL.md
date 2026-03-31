@@ -33,6 +33,17 @@ Look owns image-to-action conversion: ingest, context inference, domain routing,
 
 Look does not own: web research (Sift), knowledge graph writes (Elephas), preference persistence (Taste), communications (Dispatch).
 
+## Ontology types
+
+Look works with these types from `spec-ocas-ontology.md`:
+
+- **Entity/Person** — people identified in images (public figures, named contacts).
+- **Place** — venues, locations, and scenes extracted from image context.
+- **Concept/Event** — events visible in images (gatherings, occasions, dated scenes).
+- **Thing/DigitalArtifact** — the source image itself.
+
+Look emits Signals to Elephas using the Signal schema from `spec-ocas-shared-schemas.md`. The `payload.type` field must be set to the ontology type of the primary extracted entity (`Person`, `Place`, `Event`, or `DigitalArtifact`). `source_journal_type` is `"Observation"`.
+
 ## Supported domains
 
 Events, food macros, places, products, civic issues, receipts, documents.
@@ -49,7 +60,7 @@ Read `references/domain_playbooks.md` for detailed per-domain behavior.
 6. Filter by constraints (dietary, preferences, permissions)
 7. Reduce options before asking questions
 8. Generate 1-3 decision-ready ActionDrafts
-9. Emit Signal files for extracted entities (places, events, products) to `~/openclaw/db/ocas-elephas/intake/{signal_id}.signal.json`. Use Signal schema from `spec-ocas-shared-schemas.md`.
+9. Emit Signal files for extracted entities (places, events, products) to `~/openclaw/db/ocas-elephas/intake/{signal_id}.signal.json`. Use Signal schema from `spec-ocas-shared-schemas.md`. Signal schema: Signal from spec-ocas-shared-schemas.md, with payload.type set to the ontology type of the primary entity and source_journal_type: "Observation".
 10. Write journal via `look.journal`
 
 Clarification happens only after option reduction, not before.
