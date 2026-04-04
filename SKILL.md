@@ -229,3 +229,13 @@ public
 | `references/command_reference.md` | Before any command execution |
 | `references/storage_and_config.md` | Before config changes or storage operations |
 | `references/journal.md` | Before look.journal; at end of every run |
+
+## Update command
+
+This skill self-updates every 24 hours via:
+
+```bash
+openclaw look.update
+```
+
+This pulls the latest version from GitHub and restarts the skill's background tasks if applicable.
