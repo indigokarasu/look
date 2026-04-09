@@ -2,7 +2,7 @@
 
 ## Storage
 ```
-~/openclaw/data/ocas-look/
+$OCAS_DATA_ROOT/data/ocas-look/
   config.json
   state.json
   events.jsonl
@@ -12,7 +12,7 @@
   artifacts/drafts/
   artifacts/receipts/
 
-~/openclaw/journals/ocas-look/
+$OCAS_DATA_ROOT/journals/ocas-look/
   YYYY-MM-DD/
     {run_id}.json
 ```
