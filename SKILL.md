@@ -11,7 +11,7 @@ description: >
 metadata:
   author: Indigo Karasu
   email: mx.indigo.karasu@gmail.com
-  version: "2.4.0"
+  version: "2.4.1"
   hermes:
     tags: [images, ocr, visual]
     category: signal
@@ -24,12 +24,11 @@ metadata:
     visibility: public
     filesystem:
       read:
-        - "$OCAS_DATA_ROOT/data/ocas-look/"
-        - "$OCAS_DATA_ROOT/journals/ocas-look/"
+        - "{agent_root}/commons/data/ocas-look/"
+        - "{agent_root}/commons/journals/ocas-look/"
       write:
-        - "$OCAS_DATA_ROOT/data/ocas-look/"
-        - "$OCAS_DATA_ROOT/journals/ocas-look/"
-        - "$OCAS_DATA_ROOT/db/ocas-elephas/intake/"
+        - "{agent_root}/commons/data/ocas-look/"
+        - "{agent_root}/commons/journals/ocas-look/"
     self_update:
       source: "https://github.com/indigokarasu/look"
       mechanism: "version-checked tarball from GitHub via gh CLI"
@@ -95,7 +94,7 @@ Read `references/domain_playbooks.md` for detailed per-domain behavior.
 6. Filter by constraints (dietary, preferences, permissions)
 7. Reduce options before asking questions
 8. Generate 1-3 decision-ready ActionDrafts
-9. Emit Signal files for extracted entities (places, events, products) to `$OCAS_DATA_ROOT/db/ocas-elephas/intake/{signal_id}.signal.json`. Use Signal schema from `spec-ocas-shared-schemas.md`. Signal schema: Signal from spec-ocas-shared-schemas.md, with payload.type set to the ontology type of the primary entity and source_journal_type: "Observation".
+9. Emit Signal files for extracted entities (places, events, products) to the `signal` payload field in the journal entry. Use Signal schema from `spec-ocas-shared-schemas.md`. Signal schema: Signal from spec-ocas-shared-schemas.md, with payload.type set to the ontology type of the primary entity and source_journal_type: "Observation".
 10. Write journal via `look.journal`
 
 Clarification happens only after option reduction, not before.
@@ -131,7 +130,7 @@ Default deny. Request minimally. Drafting continues even without execution permi
 ## Storage layout
 
 ```
-$OCAS_DATA_ROOT/data/ocas-look/
+{agent_root}/commons/data/ocas-look/
   config.json
   state.json
   events.jsonl
@@ -139,7 +138,7 @@ $OCAS_DATA_ROOT/data/ocas-look/
   reports/
   artifacts/
 
-$OCAS_DATA_ROOT/journals/ocas-look/
+{agent_root}/commons/journals/ocas-look/
   YYYY-MM-DD/
     {run_id}.json
 ```
@@ -211,11 +210,11 @@ Observation Journal — all image ingestion and draft generation runs.
 
 On first invocation of any Look command, run `look.init`:
 
-1. Create `$OCAS_DATA_ROOT/data/ocas-look/` and subdirectories (`reports/`, `artifacts/`)
+1. Create `{agent_root}/commons/data/ocas-look/` and subdirectories (`reports/`, `artifacts/`)
 2. Write default `config.json` and `state.json` if absent
 3. Create empty JSONL files: `events.jsonl`, `decisions.jsonl`
-4. Create `$OCAS_DATA_ROOT/journals/ocas-look/`
-5. Ensure `$OCAS_DATA_ROOT/db/ocas-elephas/intake/` exists (create if missing)
+4. Create `{agent_root}/commons/journals/ocas-look/`
+5. Ensure journal payload fields (see interfaces specification) exists (create if missing)
 6. Register cron job `look:update` if not already present (check the platform scheduling registry first)
 7. Log initialization as a DecisionRecord in `decisions.jsonl`
 
