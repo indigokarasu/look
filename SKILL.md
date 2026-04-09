@@ -1,9 +1,44 @@
 ---
 name: ocas-look
-source: https://github.com/indigokarasu/look
-install: openclaw skill install https://github.com/indigokarasu/look
-description: Use when converting a user-provided image into a validated, decision-ready action draft: events from flyers, macros from meal photos, places to save, products to price, receipts to log, documents to file, or civic issues to report. Trigger phrases: 'look at this image', 'what is this', 'scan this receipt', 'what event is this', 'how many calories', 'save this place', 'update look'. Do not use for generic OCR, computer vision research, or surveillance.
-metadata: {"openclaw":{"emoji":"👁️"}}
+description: >
+  Look: image-to-action skill. Converts user-provided images into validated,
+  decision-ready drafts across real-world action domains: events from flyers,
+  macros from meal photos, places to save, products to price, receipts to log,
+  documents to file, civic issues to report. Trigger phrases: 'look at this
+  image', 'what is this', 'scan this receipt', 'what event is this', 'how many
+  calories', 'save this place', 'update look'. Do not use for generic OCR,
+  computer vision research, or surveillance.
+metadata:
+  author: Indigo Karasu
+  email: mx.indigo.karasu@gmail.com
+  version: "2.4.0"
+  hermes:
+    tags: [images, ocr, visual]
+    category: signal
+    cron:
+      - name: "look:update"
+        schedule: "0 0 * * *"
+        command: "look.update"
+  openclaw:
+    skill_type: system
+    visibility: public
+    filesystem:
+      read:
+        - "$OCAS_DATA_ROOT/data/ocas-look/"
+        - "$OCAS_DATA_ROOT/journals/ocas-look/"
+      write:
+        - "$OCAS_DATA_ROOT/data/ocas-look/"
+        - "$OCAS_DATA_ROOT/journals/ocas-look/"
+        - "$OCAS_DATA_ROOT/db/ocas-elephas/intake/"
+    self_update:
+      source: "https://github.com/indigokarasu/look"
+      mechanism: "version-checked tarball from GitHub via gh CLI"
+      command: "look.update"
+      requires_binaries: [gh, tar, python3]
+    cron:
+      - name: "look:update"
+        schedule: "0 0 * * *"
+        command: "look.update"
 ---
 
 # Look
@@ -60,7 +95,7 @@ Read `references/domain_playbooks.md` for detailed per-domain behavior.
 6. Filter by constraints (dietary, preferences, permissions)
 7. Reduce options before asking questions
 8. Generate 1-3 decision-ready ActionDrafts
-9. Emit Signal files for extracted entities (places, events, products) to `~/openclaw/db/ocas-elephas/intake/{signal_id}.signal.json`. Use Signal schema from `spec-ocas-shared-schemas.md`. Signal schema: Signal from spec-ocas-shared-schemas.md, with payload.type set to the ontology type of the primary entity and source_journal_type: "Observation".
+9. Emit Signal files for extracted entities (places, events, products) to `$OCAS_DATA_ROOT/db/ocas-elephas/intake/{signal_id}.signal.json`. Use Signal schema from `spec-ocas-shared-schemas.md`. Signal schema: Signal from spec-ocas-shared-schemas.md, with payload.type set to the ontology type of the primary entity and source_journal_type: "Observation".
 10. Write journal via `look.journal`
 
 Clarification happens only after option reduction, not before.
@@ -96,7 +131,7 @@ Default deny. Request minimally. Drafting continues even without execution permi
 ## Storage layout
 
 ```
-~/openclaw/data/ocas-look/
+$OCAS_DATA_ROOT/data/ocas-look/
   config.json
   state.json
   events.jsonl
@@ -104,7 +139,7 @@ Default deny. Request minimally. Drafting continues even without execution permi
   reports/
   artifacts/
 
-~/openclaw/journals/ocas-look/
+$OCAS_DATA_ROOT/journals/ocas-look/
   YYYY-MM-DD/
     {run_id}.json
 ```
@@ -176,12 +211,12 @@ Observation Journal — all image ingestion and draft generation runs.
 
 On first invocation of any Look command, run `look.init`:
 
-1. Create `~/openclaw/data/ocas-look/` and subdirectories (`reports/`, `artifacts/`)
+1. Create `$OCAS_DATA_ROOT/data/ocas-look/` and subdirectories (`reports/`, `artifacts/`)
 2. Write default `config.json` and `state.json` if absent
 3. Create empty JSONL files: `events.jsonl`, `decisions.jsonl`
-4. Create `~/openclaw/journals/ocas-look/`
-5. Ensure `~/openclaw/db/ocas-elephas/intake/` exists (create if missing)
-6. Register cron job `look:update` if not already present (check `openclaw cron list` first)
+4. Create `$OCAS_DATA_ROOT/journals/ocas-look/`
+5. Ensure `$OCAS_DATA_ROOT/db/ocas-elephas/intake/` exists (create if missing)
+6. Register cron job `look:update` if not already present (check the platform scheduling registry first)
 7. Log initialization as a DecisionRecord in `decisions.jsonl`
 
 ## Background tasks
@@ -191,7 +226,7 @@ On first invocation of any Look command, run `look.init`:
 | `look:update` | cron | `0 0 * * *` (midnight daily) | `look.update` |
 
 ```
-openclaw cron add --name look:update --schedule "0 0 * * *" --command "look.update" --sessionTarget isolated --lightContext true --timezone America/Los_Angeles
+# Task declared in SKILL.md frontmatter metadata.{platform}.cron
 ```
 
 
