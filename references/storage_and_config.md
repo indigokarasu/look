@@ -2,7 +2,7 @@
 
 ## Storage
 ```
-$OCAS_DATA_ROOT/data/ocas-look/
+{agent_root}/commons/data/ocas-look/
   config.json
   state.json
   events.jsonl
@@ -12,7 +12,7 @@ $OCAS_DATA_ROOT/data/ocas-look/
   artifacts/drafts/
   artifacts/receipts/
 
-$OCAS_DATA_ROOT/journals/ocas-look/
+{agent_root}/commons/journals/ocas-look/
   YYYY-MM-DD/
     {run_id}.json
 ```
