@@ -11,7 +11,7 @@ description: >
 metadata:
   author: Indigo Karasu
   email: mx.indigo.karasu@gmail.com
-  version: "2.4.1"
+  version: "2.4.2"
   hermes:
     tags: [images, ocr, visual]
     category: signal
@@ -269,7 +269,7 @@ public
 This skill self-updates every 24 hours via:
 
 ```bash
-openclaw look.update
+look.update
 ```
 
 This pulls the latest version from GitHub and restarts the skill's background tasks if applicable.
