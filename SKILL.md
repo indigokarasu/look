@@ -199,7 +199,7 @@ skill_okrs:
 
 ## Optional skill cooperation
 
-- Sift — web research for validation during draft generation
+- Sift — web research for validation during draft generation (via SearchX)
 - Elephas — emit Signal files for extracted entities after draft generation
 
 ## Journal outputs
