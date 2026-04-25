@@ -17,7 +17,7 @@ metadata:
     category: signal
     cron:
       - name: "look:update"
-        schedule: "0 0 * * *"
+        schedule: "20 7 * * *"
         command: "look.update"
   openclaw:
     skill_type: system
@@ -36,7 +36,7 @@ metadata:
       requires_binaries: [gh, tar, python3]
     cron:
       - name: "look:update"
-        schedule: "0 0 * * *"
+        schedule: "20 7 * * *"
         command: "look.update"
 ---
 
