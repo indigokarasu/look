@@ -11,7 +11,7 @@ description: >
 metadata:
   author: Indigo Karasu
   email: mx.indigo.karasu@gmail.com
-  version: "2.4.3"
+  "2.4.5"
   hermes:
     tags: [images, ocr, visual]
     category: signal

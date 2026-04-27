@@ -45,6 +45,9 @@ Look closes the gap between the physical world and the digital agent stack. A ph
 
 ## Changelog
 
+
+### v2.4.5 — April 26, 2026
+- Version alignment per spec-ocas-skill-publishing.md (no functional change)
 ### v2.3.0 -- March 27, 2026
 - Added `look.update` command and midnight cron for automatic version-checked self-updates
 
