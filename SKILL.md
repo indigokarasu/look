@@ -1,20 +1,36 @@
 ---
 name: ocas-look
-description: 'Look: image-to-action skill. Converts user-provided images into validated,
-  decision-ready drafts across real-world action domains: events from flyers, macros
-  from meal photos, places to save, products to price, receipts to log, documents
-  to file, civic issues to report. Includes Google reverse image search for finding
-  image sources, matches, and context. Trigger phrases: ''look at this image'', ''what
-  is this'', ''scan this receipt'', ''what event is this'', ''how many calories'',
-  ''save this place'', ''reverse image search this'', ''find this image'', ''update look''. Do not use for generic OCR, computer vision
-  research, or surveillance.
-
-  '
+description: >
+  Converts user-provided images into validated, decision-ready action drafts.
+  Routes images by inferred intent across domains: events from flyers, macros from
+  meal photos, places to save, products to price, receipts to log, documents to file,
+  civic issues to report. Supports reverse image search via Yandex (browser) and
+  Google (residential IP fallback).
+  Trigger: flyer, receipt, meal photo, product photo, document scan, civic issue photo,
+  "look at this image", "what is this", "scan this", "reverse image search".
+  NOT for generic OCR, computer vision research, or surveillance.
 license: MIT
+source: https://github.com/indigokarasu/look
+includes:
+  - references/**
+  - scripts/**
 metadata:
   author: Indigo Karasu
   version: 2.5.1
 ---
+## When to Use
+
+- Image analysis and visual content extraction
+- Reverse image search and source identification
+- Visual verification of web content
+- Screenshot analysis and OCR
+- When any skill needs image understanding
+## When NOT to Use
+
+- Image generation (use Imagine)
+- Video processing or analysis
+- Bulk image processing at scale
+- Real-time camera feed analysis
 
 # Look
 
@@ -29,6 +45,14 @@ Look bridges the physical world and the digital agent — it takes a user-provid
 - A civic issue photo → 311 report draft
 - A receipt → expense entry
 - A document → searchable PDF and filing draft
+
+## When NOT to use
+
+- Generic OCR utility (use a dedicated OCR skill)
+- Universal computer vision toolkit (use a CV-specific tool)
+- Background surveillance or tracking
+- Generic automation framework
+- Images where the user has no clear intent or action in mind
 
 ## What this skill does not do
 
@@ -62,18 +86,7 @@ Read `references/domain_playbooks.md` for detailed per-domain behavior.
 
 ## Core workflow
 
-1. Ingest image(s) with EXIF if available
-2. Merge extraction evidence (OCR, entities, context)
-3. Infer context and likely intent
-4. Route to appropriate domain
-5. Research and validate externally
-6. Filter by constraints (dietary, preferences, permissions)
-7. Reduce options before asking questions
-8. Generate 1-3 decision-ready ActionDrafts
-9. Emit Signal files for extracted entities (places, events, products) to the `signal` payload field in the journal entry. Use Signal schema from `spec-ocas-shared-schemas.md`. Signal schema: Signal from spec-ocas-shared-schemas.md, with payload.type set to the ontology type of the primary entity and source_journal_type: "Observation".
-10. Write journal via `look.journal`
-
-Clarification happens only after option reduction, not before.
+See `references/workflow.md` for the full step-by-step procedure, error handling table, and clarification rules.
 
 ## Commands
 
@@ -85,7 +98,7 @@ Clarification happens only after option reduction, not before.
 - `look.config.set` — update configuration
 - `look.journal` — write journal for the current run; called at end of every run
 - `look.update` — pull latest from GitHub source; preserves journals and data
-- `look.reverse_search` — perform Google reverse image search on an image URL or local file. Returns matching pages, titles, and similar image URLs.
+- `lookup.reverse_search` — perform Google reverse image search on an image URL or local file. Returns matching pages, titles, and similar image URLs.
 
 ## Confirmation and rollback rules
 
@@ -104,66 +117,25 @@ Default deny. Request minimally. Drafting continues even without execution permi
 - iOS relay pre-parse is optional evidence, not truth
 - The skill must work without relay upload
 
+## Error handling
+
+See `references/workflow.md` for the full error handling table.
+
 ## Reverse Image Search
 
-Look can perform reverse image search to find the source, context, or matches for a given image. This is useful for: identifying people in photos, finding product sources, locating event flyers, verifying image authenticity, and discovering higher-resolution versions.
+Look uses reverse image search during step 5 (Research and validate externally). Primary method: Yandex Images via browser (works from cloud IPs). Fallback: `google-image-source-search` PyPI package (residential IPs only).
 
-### Primary: Yandex Images (browser-based)
+**Quick reference:**
+- Local file → upload to Imgur first → public URL → Yandex search
+- Already a public URL → use directly with Yandex
+- Google fallback only on residential IP — never retry more than once from cloud
 
-**Yandex reverse image search works reliably from cloud IPs** where Google blocks. This is the preferred method.
+Detailed instructions: `references/google-image-source-search.md` (Google fallback), `references/credential-files.md` (Imgur client ID).
 
-**Workflow:**
-1. Upload the image to a public host (see "Hosting local images" below)
-2. Navigate browser to: `https://yandex.com/images/search?url=<encoded_image_url>&rpt=imageview`
-3. Extract results from the page snapshot — Yandex renders results server-side, so `browser_snapshot` captures them directly
-4. Key regions in the snapshot:
-   - `"Image appears to contains"` — tags/descriptions of the image content
-   - `"Similar images"` — visually similar images with source links
-   - `"Sites with information about the image"` — web pages containing the image
-   - `"In other sizes"` — available resolutions
-
-**Extracting result URLs from snapshot:** Parse the snapshot text for link titles and URLs. Yandex results are plain HTML links, not JS-rendered.
-
-### Fallback: `google-image-source-search` (Vorrik)
-
-**Package:** `google-image-source-search` on PyPI. Pure Python, no API keys required. Scrapes Google's reverse image search results page.
-
-**⚠️ CLOUD IP BLOCKING:** Google blocks image search uploads from cloud/server IPs. Both `search()` and `search_by_file()` will fail when run from a VPS/cloud environment. **Do not waste time retrying — go straight to Yandex.**
-
-**Installation & usage:** See `references/pip-venv.md` (correct venv install pattern) and `references/google-image-source-search.md` (full usage reference).
-
-### Hosting local images for reverse search
-
-When you have a local file and need a public URL for reverse image search:
-
-**Imgur anonymous upload (most reliable):**
-See `references/credential-files.md` for the Imgur client ID and upload code pattern.
-
-Other hosts (0x0.st, transfer.sh) are frequently down or slow. Imgur is the most reliable.
-
-### Decision tree
-
-```
-Have image (local file or URL)
-  │
-  ├─ Is it a local file?
-  │   ├─ YES → Upload to Imgur first → get public URL
-  │   └─ NO (already a URL) → Use directly
-  │
-  └─ Reverse search via Yandex (browser)
-      ├─ Results found → Done
-      └─ No results → Try Google (only if on residential IP)
-```
-
-**Integration with core workflow:** Reverse image search runs automatically during step 5 (Research and validate externally) when the ingested image is a photo of a person, product, place, or document. Results feed into entity extraction and draft generation.
-
-**Pitfalls:**
-- **Google blocks cloud IPs completely.** From any VPS/cloud server, Google reverse image search will fail. Use Yandex instead. Do not retry Google more than once.
-- `search_by_file()` uploads the image directly to Google — fails from cloud IPs.
-- `search()` passes the URL to Google — also fails from cloud IPs (Google checks the request origin, not just the image host).
-- Yandex results are in Russian sometimes — the snapshot text may contain Cyrillic tags. The site URLs and image URLs are still usable.
-- Imgur's public client ID has rate limits. See `references/credential-files.md` for details.
-- TinEye returns JS-rendered results that can't be scraped from curl — use the browser if TinEye is needed.
+**Gotchas (also in Gotchas section):**
+- Google blocks cloud IPs completely — use Yandex
+- TinEye returns JS-rendered results — use browser
+- Yandex results may contain Cyrillic tags — URLs still usable
 
 ## Storage layout
 
@@ -181,58 +153,11 @@ Have image (local file or URL)
     {run_id}.json
 ```
 
-Default config.json:
-```json
-{
-  "skill_id": "ocas-look",
-  "skill_version": "2.3.0",
-  "config_version": "1",
-  "created_at": "",
-  "updated_at": "",
-  "domains": {
-    "events": true,
-    "food": true,
-    "places": true,
-    "products": true,
-    "civic": true,
-    "receipts": true,
-    "documents": true
-  },
-  "user_profile": {
-    "diet": "vegetarian"
-  },
-  "commerce": {
-    "auto_purchase": false
-  },
-  "retention": {
-    "days": 30,
-    "max_records": 10000
-  }
-}
-```
+Default config: see `references/default_config.md`.
 
 ## OKRs
 
-Universal OKRs from spec-ocas-journal.md apply to all runs.
-
-```yaml
-skill_okrs:
-  - name: draft_accuracy
-    metric: fraction of ActionDrafts accepted without modification
-    direction: maximize
-    target: 0.75
-    evaluation_window: 30_runs
-  - name: domain_routing_accuracy
-    metric: fraction of images routed to correct domain on first attempt
-    direction: maximize
-    target: 0.90
-    evaluation_window: 30_runs
-  - name: confirmation_compliance
-    metric: fraction of high-risk actions requiring confirmation before execution
-    direction: maximize
-    target: 1.0
-    evaluation_window: 30_runs
-```
+See `references/okrs.md` for the full OKR definitions. Universal OKRs from spec-ocas-journal.md apply to all runs.
 
 ## Optional skill cooperation
 
@@ -271,21 +196,7 @@ On first invocation of any Look command, run `look.init`:
 
 `look.update` pulls the latest package from the `source:` URL in this file's frontmatter. Runs silently — no output unless the version changed or an error occurred.
 
-1. Read `source:` from frontmatter → extract `{owner}/{repo}` from URL
-2. Read local version from SKILL.md frontmatter `metadata.version`
-3. Fetch remote version from SKILL.md frontmatter: `gh api "repos/{owner}/{repo}/contents/SKILL.md" --jq '.content' | base64 -d | grep 'version:' | head -1 | sed 's/.*"\(.*\)".*/\1/'`
-4. If remote version equals local version → stop silently
-5. Download and install:
-   ```bash
-   TMPDIR=$(mktemp -d)
-   gh api "repos/{owner}/{repo}/tarball/main" > "$TMPDIR/archive.tar.gz"
-   mkdir "$TMPDIR/extracted"
-   tar xzf "$TMPDIR/archive.tar.gz" -C "$TMPDIR/extracted" --strip-components=1
-   cp -R "$TMPDIR/extracted/"* ./
-   rm -rf "$TMPDIR"
-   ```
-6. On failure → retry once. If second attempt fails, report the error and stop.
-7. Output exactly: `I updated Look from version {old} to {new}`
+See `references/self_update.md` for the full self-update procedure.
 
 ## Visibility
 
@@ -299,7 +210,7 @@ public
 - **TinEye returns JS-rendered results** — Use the browser if TinEye is needed; it can't be scraped with curl.
 - **Reverse image search requires a public URL** — Upload local files to Imgur first, then use the returned URL for Yandex reverse search.
 
-## Support file map
+## Support File Map
 
 | File | When to read |
 |------|-------------|
@@ -310,6 +221,12 @@ public
 | `references/storage_and_config.md` | Before config changes or storage operations; when modifying skill state |
 | `references/journal.md` | Before calling look.journal; at end of every run |
 | `references/pip-venv.md` | Before installing any pip package for a skill; when setting up Python dependencies |
+| `references/google-image-source-search.md` | Before using Google reverse image search fallback; when on residential IP and Yandex is unavailable |
+| `references/credential-files.md` | Before reverse image search with local files; when Imgur client ID is needed |
+| `references/default_config.md` | Before initialization or config changes; when referencing default config values |
+| `references/okrs.md` | Before writing or evaluating OKRs; when checking skill-level targets |
+| `references/workflow.md` | Before executing the core workflow; when handling errors during processing |
+| `references/self_update.md` | Before running `look.update`; when debugging self-update failures |
 
 ## Update command
 
