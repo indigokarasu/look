@@ -1,7 +1,8 @@
 ---
+license: MIT
+warning: 'FALSE TRIGGER RISK: Has had 100% false trigger rate on interactive loads. This skill is ONLY for converting user-provided images into action drafts (events from flyers, macros from meals, places, products, receipts, documents). Do NOT load for general image analysis, OCR, or vision tasks. If the user did not provide an image, do not load this skill.'
 name: ocas-look
 description: 'Converts user-provided images into validated, decision-ready action drafts. Routes images by inferred intent across domains: events from flyers, macros from meal photos, places to save, products to price, receipts to log, documents to file, civic issues to report. Supports reverse image search via Yandex and Google. NOT for generic OCR, computer vision research, or surveillance.'
-license: MIT
 source: https://github.com/indigokarasu/look
 includes:
 - references/**
@@ -9,11 +10,13 @@ includes:
 metadata:
   author: Indigo Karasu (indigokarasu)
   version: 2.5.2
-tags:
-- image-analysis
-- OCR
-- decision-support
-- routing
+  hermes:
+    tags:
+    - image-analysis
+    - OCR
+    - decision-support
+    - routing
+    category: ocas-look
 triggers:
 - analyze image
 - image to action
@@ -51,18 +54,23 @@ When invoked interactively, present a two-level menu. See `references/interactiv
 - Generic automation framework
 - Images where the user has no clear intent in mind
 
-## What this skill does not do
+## Workflow
 
-- Generic OCR utility
-- Universal computer vision toolkit
-- Background surveillance or tracking
-- Generic automation framework
+The image-to-draft workflow routes user images through intent inference, domain routing, and draft generation. This workflow exists because raw images alone are not actionable — the agent must extract structured meaning before proposing next steps.
+
+1. **Ingest** — Accept user-provided image (file, URL, or paste)
+2. **Classify intent** — Determine domain (event, meal, place, product, receipt, document, civic)
+3. **Extract** — OCR, vision analysis, reverse image search as needed
+4. **Generate draft** — Produce actionable output (calendar entry, macro estimate, expense log, etc.)
+5. **Confirm** — Present draft to user for approval before acting
+
+Example: a user provides a flyer image → agent classifies as "event" → extracts date/venue → generates calendar draft → confirms with user.
 
 ## Responsibility boundary
 
 Look owns image-to-action conversion: ingest, context inference, domain routing, draft generation, and execution with confirmation.
 
-Look does not own: web research (Sift), knowledge graph writes (Elephas), preference persistence (Taste), communications (Dispatch).
+Look does not own: web research (Sift), preference persistence (Taste), communications (Dispatch).
 
 ## Ontology types
 
@@ -73,7 +81,7 @@ Look works with these types from `spec-ocas-ontology.md`:
 - **Concept/Event** — events visible in images (gatherings, occasions, dated scenes).
 - **Thing/DigitalArtifact** — the source image itself.
 
-Look emits Signals to Elephas using the Signal schema from `spec-ocas-shared-schemas.md`. The `payload.type` field must be set to the ontology type of the primary extracted entity (`Person`, `Place`, `Event`, or `DigitalArtifact`). `source_journal_type` is `"Observation"`.
+Look includes entity signals in journal payloads using the Signal schema from `spec-ocas-shared-schemas.md`. The `payload.type` field must be set to the ontology type of the primary extracted entity (`Person`, `Place`, `Event`, or `DigitalArtifact`). `source_journal_type` is `"Observation"`.
 
 ## Supported domains
 
@@ -159,7 +167,7 @@ See `references/okrs.md` for the full OKR definitions. Universal OKRs from spec-
 ## Optional skill cooperation
 
 - Sift — web research for validation during draft generation (via SearchX)
-- Elephas — emit Signal files for extracted entities after draft generation
+- Chronicle — entity signals emitted via journal payloads after draft generation
 
 ## Journal outputs
 
