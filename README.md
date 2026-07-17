@@ -1,27 +1,15 @@
-# 👁️ Look
+# look
 
-> **Image-to-action — takes a photo and produces a validated action draft.**
+<p align="center">
+<img src="./assets/readme/hero.svg" width="100%" alt="Look: image-to-action — takes a photo and produces a validated action draft for calendar, shopping, receipts, and more.">
+</p>
 
-## Why Look?
+look — Look: image-to-action — takes a photo and produces a validated action draft for calendar, shopping, receipts, and more.
 
-You take a photo of a receipt, a whiteboard, a menu, a document — and then what? Look bridges the physical and digital by taking a user-provided image, inferring what you probably want done with it, and producing a validated action draft across domains: calendar events, meal macros, places, product comparisons, receipts, documents, and civic reports.
 
-Skill packages follow the [agentskills.io](https://agentskills.io/specification) open standard and are compatible with OpenClaw, Hermes Agent, Claude, and any agentskills.io-compliant client.
+> Tell it what you need. It does the work.
 
-## Quick Start
-
-```
-# Send an image
-"Here's a photo of this receipt — what can you do with it?"
-
-# Whiteboard capture
-"Parse this whiteboard photo into action items"
-
-# Menu scan
-"What are the good options on this menu?"
-```
-
-## What It Does
+## What it does
 
 Look takes a user-provided image, infers intent, and produces a validated action draft. It resolves ambiguity through research and option reduction before asking clarifying questions. Nothing executes without explicit per-draft confirmation. It handles receipts, documents, menus, whiteboards, products, and civic reports.
 
@@ -33,3 +21,7 @@ Look takes a user-provided image, infers intent, and produces a validated action
 ---
 
 *Look is part of the [OCAS Agent Suite](https://github.com/indigokarasu).*
+
+---
+
+*look is part of the [OCAS Agent Suite](https://github.com/indigokarasu).*
