@@ -1,7 +1,7 @@
 # look
 
 <p align="center">
-<img src="./assets/readme/hero.svg" width="100%" alt="Look: image-to-action — takes a photo and produces a validated action draft for calendar, shopping, receipts, and more.">
+<img src="./assets/readme/hero.jpg" width="100%" alt="Look: image-to-action — takes a photo and produces a validated action draft for calendar, shopping, receipts, and more.">
 </p>
 
 look — Look: image-to-action — takes a photo and produces a validated action draft for calendar, shopping, receipts, and more.
