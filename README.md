@@ -8,7 +8,7 @@ Converts user-provided images into validated, decision-ready action drafts. Rout
 **Version:** 2.5.2
 **Type:** 
 **Layer:** ocas-look
-**Author:** Indigo Karasu
+**Author:** <agent-name>
 
 ---
 
