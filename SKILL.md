@@ -9,7 +9,7 @@ includes:
 - scripts/**
 metadata:
   author: Indigo Karasu (indigokarasu)
-  version: 2.5.2
+  version: "2.6.0"
   hermes:
     tags:
     - image-analysis

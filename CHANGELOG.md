@@ -1,3 +1,8 @@
+## [2.6.0] - 2026-09-16
+
+### Added
+- **Structured action envelopes** — `ActionDraft` schema now carries explicit `confidence` (0.0–1.0) and `requires_confirmation` boolean fields (true for high-risk: purchase, 311, health-write, external submit, or confidence < 0.8); per `spec-ocas-suite-cross-skill-updates.md`.
+
 ## [2.4.5] - 2026-04-26
 
 ### Changed
