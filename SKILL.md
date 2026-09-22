@@ -1,6 +1,6 @@
 ---
 license: MIT
-warning: 'FALSE TRIGGER RISK: Has had 100% false trigger rate on interactive loads. This skill is ONLY for converting user-provided images into action drafts (events from flyers, macros from meals, places, products, receipts, documents). Do NOT load for general image analysis, OCR, or vision tasks. If the user did not provide an image, do not load this skill.'
+warning: 'FALSE TRIGGER RISK: Has had 50% false trigger rate on interactive loads (1/2 as of 2026-06-22 report; 2 total events). This skill is ONLY for converting user-provided images into action drafts (events from flyers, macros from meals, places, products, receipts, documents). Do NOT load for general image analysis, OCR, or vision tasks. If the user did not provide an image, do not load this skill. Warning last updated 2026-09-21.'
 name: ocas-look
 description: 'Converts user-provided images into validated, decision-ready action drafts. Routes images by inferred intent across domains: events from flyers, macros from meal photos, places to save, products to price, receipts to log, documents to file, civic issues to report. Supports reverse image search via Yandex and Google. NOT for generic OCR, computer vision research, or surveillance.'
 source: https://github.com/<agent-handle>/look
