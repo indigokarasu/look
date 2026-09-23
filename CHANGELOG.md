@@ -52,7 +52,7 @@
 
 ### Added
 - Ontology mapping: Look works with Entity/Person, Place, Concept/Event, Thing/DigitalArtifact types
-- Explicit Signal schema reference for Elephas emissions (payload.type, source_journal_type)
+- Explicit Signal schema reference for Chronicle emissions (payload.type, source_journal_type)
 
 ## Prior
 

@@ -74,14 +74,14 @@ Look does not own: web research (Sift), preference persistence (Taste), communic
 
 ## Ontology types
 
-Look works with these types from `spec-ocas-ontology.md`:
+Look works with these types from [[`spec-ocas-ontology.md` ⚠️ Pending spec] ⚠️ Pending spec — not yet authored]:
 
 - **Entity/Person** — people identified in images (public figures, named contacts).
 - **Place** — venues, locations, and scenes extracted from image context.
 - **Concept/Event** — events visible in images (gatherings, occasions, dated scenes).
 - **Thing/DigitalArtifact** — the source image itself.
 
-Look includes entity signals in journal payloads using the Signal schema from `spec-ocas-shared-schemas.md`. The `payload.type` field must be set to the ontology type of the primary extracted entity (`Person`, `Place`, `Event`, or `DigitalArtifact`). `source_journal_type` is `"Observation"`.
+Look includes entity signals in journal payloads using the Signal schema from [[`spec-ocas-shared-schemas.md` ⚠️ Pending spec] ⚠️ Pending spec — not yet authored]. The `payload.type` field must be set to the ontology type of the primary extracted entity (`Person`, `Place`, `Event`, or `DigitalArtifact`). `source_journal_type` is `"Observation"`.
 
 ## Supported domains
 
@@ -246,3 +246,7 @@ look.update
 ```
 
 This pulls the latest version from GitHub and restarts the skill's background tasks if applicable.
+
+## Support Files
+
+- `scripts/update.sh` — update.sh — Pull latest Look from GitHub source
