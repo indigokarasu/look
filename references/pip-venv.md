@@ -2,7 +2,7 @@
 
 ## The Venv Problem
 
-Hermes Agent runs inside a virtual environment at `<hermes-venv>/`.
+Hermes Agent runs inside a virtual environment (locate it: `python3 -c "import sys; print(sys.prefix)"`; examples below use `<hermes-venv>` as the venv path).
 System `pip` may install to `/usr/local/lib/python3.X/dist-packages/` instead of the venv's `site-packages/`, causing `ModuleNotFoundError` at runtime even though `pip` reported success.
 
 ## Correct Pattern
