@@ -210,7 +210,7 @@ public
 ## Gotchas
 
 - **Google reverse image search is blocked from cloud IPs** — Use Yandex Images via browser instead. Do not retry Google more than once.
-- **Vision model config**: `vision_analyze` uses the `vision.model` and `vision.provider` fields in `config.yaml`, NOT the auxiliary model. Set to a vision-capable model like `nvidia/nemotron-nano-12b-v2-vl:free` (provider: openrouter). The agent cannot patch config.yaml directly — use `hermes config set vision.model <model>` or edit manually.
+- **Vision config**: `vision_analyze` uses the `vision.model` and `vision.provider` fields in `config.yaml`, NOT the auxiliary model. Set it to whichever vision-capable provider is currently working — do not assume a specific one; the free tiers fail often. The agent cannot patch config.yaml directly — use `hermes config set vision.model <model>` or edit manually.
 - **Reasoning model incompatibility**: Some free vision models (nex-agi/nex-n2-pro:free, nvidia/nemotron-3-nano-omni) are reasoning-only models that return `content: null` with the answer in `message.reasoning`. The `vision_analyze` tool doesn't handle this. Use `nvidia/nemotron-nano-12b-v2-vl:free` for reliable vision analysis.
 - **Wikimedia image URLs blocked**: OpenRouter proxy returns 400 when fetching wikimedia.org image URLs. Use base64-encoded images or alternative image hosts.
 - **LLM7.io has no free vision model**: GLM-4.6V-Flash is paywalled. Use OpenRouter free vision models instead.
